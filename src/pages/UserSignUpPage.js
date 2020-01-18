@@ -33,7 +33,7 @@ export class UserSignUpPage extends React.Component {
     onClickSignUp = () => {
 
         const user = {
-            username: this.state.userName,
+            userName: this.state.userName,
             password: this.state.password,
             displayName: this.state.displayName
         };

@@ -142,7 +142,7 @@ describe('UserSignUpPage', () => {
             fireEvent.click(button);
 
             const expectedUser = {
-                username: 'my-user-name',
+                userName: 'my-user-name',
                 password: 'my-passwoP3rd',
                 displayName: 'my-display-name'
             };
