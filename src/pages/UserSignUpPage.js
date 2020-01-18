@@ -33,16 +33,22 @@ export class UserSignUpPage extends React.Component {
     onClickSignUp = () => {
 
         const user = {
-            username: this.state.userName,
+            userName: this.state.userName,
             password: this.state.password,
             displayName: this.state.displayName
         };
 
         this.setState({ pendingApiCall: true });
         if (this.props.actions) {
-            this.props.actions.postSignup(user).then(response =>{
-                this.setState({ pendingApiCall: false });
-            });
+            this.props.actions.postSignup(user)
+                .then(response => {
+                    this.setState({ pendingApiCall: false });
+                })
+                .catch((error) => {
+                    this.setState({ pendingApiCall: false });
+                })
+                ;
+
         }
     }
 

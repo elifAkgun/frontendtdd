@@ -142,7 +142,7 @@ describe('UserSignUpPage', () => {
             fireEvent.click(button);
 
             const expectedUser = {
-                username: 'my-user-name',
+                userName: 'my-user-name',
                 password: 'my-passwoP3rd',
                 displayName: 'my-display-name'
             };
@@ -178,7 +178,7 @@ describe('UserSignUpPage', () => {
 
         });
 
-        it('hide spinner after api call successfully', async() => {
+        it('hide spinner after api call successfully', async () => {
             const actions = {
                 postSignup: jest.fn().mockResolvedValueOnce({})
             };
@@ -186,22 +186,30 @@ describe('UserSignUpPage', () => {
             const { queryByText } = setUpForSubmit({ actions });
             fireEvent.click(button);
 
-            await waitForDomChange() ; 
+            await waitForDomChange();
 
             const spinner = queryByText('Loading...');
 
             expect(spinner).not.toBeInTheDocument();
         });
 
-        it('hide spinner after api call with an error', async() => {
+        it('hide spinner after api call with an error', async () => {
             const actions = {
-                postSignup: jest.fn().mockResolvedValueOnce({})
+                postSignup: jest.fn().mockImplementation(() => {
+                    return new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                            reject({
+                                response: { data: {} }
+                            });
+                        }, 300);
+                    });
+                })
             };
 
             const { queryByText } = setUpForSubmit({ actions });
             fireEvent.click(button);
 
-            await waitForDomChange() ; 
+            await waitForDomChange();
 
             const spinner = queryByText('Loading...');
 
