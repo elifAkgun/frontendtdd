@@ -4,7 +4,7 @@ import { UserSignUpPage } from './UserSignUpPage';
 
 describe('UserSignUpPage', () => {
 
-    describe('Layout', () => {
+    describe('Layout', () => { 
         it('has header of Sign Up', () => {
             const { container } = render(<UserSignUpPage />);
             const header = container.querySelector('h1');
@@ -139,7 +139,7 @@ describe('UserSignUpPage', () => {
             fireEvent.click(button);
 
             const expectedUser = {
-                userName: 'my-user-name',
+                username: 'my-user-name',
                 password: 'my-passwoP3rd',
                 displayName: 'my-display-name'
             };

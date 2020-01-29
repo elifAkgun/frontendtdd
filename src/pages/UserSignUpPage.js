@@ -5,7 +5,7 @@ export class UserSignUpPage extends React.Component {
 
     state = {
         displayName: '',
-        userName: '',
+        username: '',
         password: '',
         repeatPassword: '',
         pendingApiCall: false,
@@ -23,8 +23,8 @@ export class UserSignUpPage extends React.Component {
     onChangeUserName = (event) => {
         const value = event.target.value;
         const errors = {...this.state.errors};
-        delete errors.userName;
-        this.setState({ userName: value ,errors})
+        delete errors.username;
+        this.setState({ username: value ,errors})
     }
 
     onChangePassword = (event) => {
@@ -48,12 +48,13 @@ export class UserSignUpPage extends React.Component {
     onClickSignUp = () => {
 
         const user = {
-            userName: this.state.userName,
+            username: this.state.username,
             password: this.state.password,
             displayName: this.state.displayName
         };
 
         this.setState({ pendingApiCall: true });
+
         if (this.props.actions) {
             this.props.actions.postSignup(user)
                 .then(response => {
@@ -87,10 +88,10 @@ export class UserSignUpPage extends React.Component {
 
                 <div className="col-12 mb-3">
                     <Input label="User Name"
-                        hasError={this.state.errors.userName && true}
-                        error={this.state.errors.userName}
+                        hasError={this.state.errors.username && true}
+                        error={this.state.errors.username}
                         placeholder="Your User Name"
-                        value={this.state.userName} onChange={this.onChangeUserName}>
+                        value={this.state.username} onChange={this.onChangeUserName}>
                     </Input>
                 </div>
                 <div className="col-12 mb-3">
@@ -113,7 +114,9 @@ export class UserSignUpPage extends React.Component {
                     </Input>
                 </div>
                 <div className="text-center">
-                    <button className="btn btn-primary" onClick={this.onClickSignUp} disabled={this.state.pendingApiCall || !this.state.passwordRepeatConfirmed}>
+                    <button className="btn btn-primary" 
+                    onClick={this.onClickSignUp} 
+                    disabled={this.state.pendingApiCall || !this.state.passwordRepeatConfirmed}>
                         {this.state.pendingApiCall && (
                             <div className="spinner-border">
                                 <span className="sr-only">Loading...</span>
