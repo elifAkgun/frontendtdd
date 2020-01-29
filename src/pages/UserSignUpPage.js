@@ -1,51 +1,71 @@
 import React from 'react';
+import Input from '../components/Input'
 
 export class UserSignUpPage extends React.Component {
 
     state = {
         displayName: '',
-        userName: '',
+        username: '',
         password: '',
         repeatPassword: '',
-        pendingApiCall: false
+        pendingApiCall: false,
+        errors: {},
+        passwordRepeatConfirmed: true
     };
 
     onChangeDisplayName = (event) => {
         const value = event.target.value;
-        this.setState({ displayName: value })
+        const errors = {...this.state.errors};
+        delete errors.displayName;
+        this.setState({ displayName: value, errors })
     }
 
     onChangeUserName = (event) => {
         const value = event.target.value;
-        this.setState({ userName: value })
+        const errors = {...this.state.errors};
+        delete errors.username;
+        this.setState({ username: value ,errors})
     }
 
     onChangePassword = (event) => {
         const value = event.target.value;
-        this.setState({ password: value })
+        const passwordRepeatConfirmed = this.state.repeatPassword === value;
+        const errors = {...this.state.errors};
+        delete errors.password;
+        errors.repeatPassword = passwordRepeatConfirmed ? '' : 'Does not match to password';
+        this.setState({ password: value, passwordRepeatConfirmed, errors })
     }
 
     onChangeRepeatPassword = (event) => {
         const value = event.target.value;
-        this.setState({ repeatPassword: value })
+        const passwordRepeatConfirmed = this.state.password === value;
+        const errors = {...this.state.errors};
+        delete errors.repeatPassword;
+        errors.repeatPassword = passwordRepeatConfirmed ? '' : 'Does not match to password';
+        this.setState({ repeatPassword: value , passwordRepeatConfirmed, errors});
     }
 
     onClickSignUp = () => {
 
         const user = {
-            userName: this.state.userName,
+            username: this.state.username,
             password: this.state.password,
             displayName: this.state.displayName
         };
 
         this.setState({ pendingApiCall: true });
+
         if (this.props.actions) {
             this.props.actions.postSignup(user)
                 .then(response => {
                     this.setState({ pendingApiCall: false });
                 })
-                .catch((error) => {
-                    this.setState({ pendingApiCall: false });
+                .catch((apiError) => {
+                    let errors = { ...this.state.errors }
+                    if (apiError.response.data && apiError.response.data.validationErrors) {
+                        errors = { ...apiError.response.data.validationErrors }
+                    }
+                    this.setState({ pendingApiCall: false, errors });
                 })
                 ;
 
@@ -57,23 +77,46 @@ export class UserSignUpPage extends React.Component {
             <div className="container">
                 <h1 className="text-center"> Sign Up</h1>
                 <div className="col-12 mb-3">
-                    <label>Display Name</label>
-                    <input className="form-control" placeholder="Your Display Name" value={this.state.displayName} onChange={this.onChangeDisplayName}></input>
+                    <Input label="Display Name"
+                        hasError={this.state.errors.displayName && true}
+                        error={this.state.errors.displayName}
+                        placeholder="Your Display Name"
+                        value={this.state.displayName}
+                        onChange={this.onChangeDisplayName}>
+                    </Input>
+                </div>
+
+                <div className="col-12 mb-3">
+                    <Input label="User Name"
+                        hasError={this.state.errors.username && true}
+                        error={this.state.errors.username}
+                        placeholder="Your User Name"
+                        value={this.state.username} onChange={this.onChangeUserName}>
+                    </Input>
                 </div>
                 <div className="col-12 mb-3">
-                    <label>User Name</label>
-                    <input className="form-control" placeholder="Your User Name" value={this.state.userName} onChange={this.onChangeUserName}></input>
+                    <Input label="Password"
+                        hasError={this.state.errors.password && true}
+                        error={this.state.errors.password}
+                        placeholder="Your Password"
+                        type="password"
+                        value={this.state.password}
+                        onChange={this.onChangePassword}>
+                    </Input>
                 </div>
                 <div className="col-12 mb-3">
-                    <label>Password</label>
-                    <input className="form-control" placeholder="Your Password" type="password" value={this.state.password} onChange={this.onChangePassword}></input>
-                </div>
-                <div className="col-12 mb-3">
-                    <label>Repat Password</label>
-                    <input className="form-control" placeholder="Your Repeat Password" type="password" value={this.state.repeatPassword} onChange={this.onChangeRepeatPassword} ></input>
+                    <Input label="Repeat Password"
+                        hasError={this.state.errors.repeatPassword && true}
+                        error={this.state.errors.repeatPassword}
+                        placeholder="Your Repeat Password"
+                        type="password" value={this.state.repeatPassword}
+                        onChange={this.onChangeRepeatPassword} >
+                    </Input>
                 </div>
                 <div className="text-center">
-                    <button className="btn btn-primary" onClick={this.onClickSignUp} disabled={this.state.pendingApiCall}>
+                    <button className="btn btn-primary" 
+                    onClick={this.onClickSignUp} 
+                    disabled={this.state.pendingApiCall || !this.state.passwordRepeatConfirmed}>
                         {this.state.pendingApiCall && (
                             <div className="spinner-border">
                                 <span className="sr-only">Loading...</span>
