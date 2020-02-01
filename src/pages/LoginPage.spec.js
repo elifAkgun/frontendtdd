@@ -1,6 +1,7 @@
 import React from 'react';
-import { render, fireEvent, waitForElement } from '@testing-library/react';
+import { render, fireEvent, waitForDomChange, waitForElement } from '@testing-library/react';
 import { LoginPage } from './LoginPage';
+import { MemoryRouter } from 'react-router-dom';
 
 describe('LoginPage', () => {
     describe('Layout', () => {
@@ -91,7 +92,7 @@ describe('LoginPage', () => {
         });
 
         it('does not throw exception when clicking the button when actions not provided in props', () => {
-            setUpForSubmit({ });
+            setUpForSubmit({});
             fireEvent.click(button);
             expect(() => fireEvent.click(button).not.toThrow());
         });
@@ -105,29 +106,29 @@ describe('LoginPage', () => {
             fireEvent.click(button);
 
             const expectedUserObject = {
-                username : 'my-user-name',
+                username: 'my-user-name',
                 password: 'my-passwoP3rd'
             };
 
             expect(actions.postLogIn).toHaveBeenCalledWith(expectedUserObject);
         });
 
-        it('enables button when the username and the password fields are not empty', () => {  
-           setUpForSubmit();
+        it('enables button when the username and the password fields are not empty', () => {
+            setUpForSubmit();
             expect(button).not.toBeDisabled();
         })
 
-        it('disable button when the username empty', () => {  
+        it('disable button when the username empty', () => {
             setUpForSubmit();
             fireEvent.change(userNameInput, changeEvent(''));
-             expect(button).toBeDisabled();
-         })
+            expect(button).toBeDisabled();
+        })
 
-         it('disable button when the password empty', () => {  
+        it('disable button when the password empty', () => {
             setUpForSubmit();
             fireEvent.change(passwordInput, changeEvent(''));
-             expect(button).toBeDisabled();
-         })
+            expect(button).toBeDisabled();
+        })
 
         it('display alert when login fails', async () => {
             const actions = {
@@ -159,76 +160,93 @@ describe('LoginPage', () => {
             fireEvent.click(button);
             await waitForElement(() => queryByText('Login Failed.'))
             fireEvent.change(userNameInput, changeEvent('new-value-username'));
-            
+
             const alert = queryByText('Login Failed.')
             expect(alert).not.toBeInTheDocument();
         })
+
+        it('does not allow to the user to click login button when there is an ongoing api call', () => {
+            const actions = {
+                postLogIn: jest.fn().mockResolvedValueOnce({})
+            };
+            setUpForSubmit({ actions });
+
+            fireEvent.click(button);
+            fireEvent.click(button);
+
+            expect(actions.postLogIn).toHaveBeenCalledTimes(1);
+
+
+        });
+
+        it('has spinner to the user to click login button when there is an ongoing api call', () => {
+            const actions = {
+                postLogIn: jest.fn().mockResolvedValueOnce({})
+            };
+            const { queryByText } = setUpForSubmit({ actions });
+
+            fireEvent.click(button);
+            const spinner = queryByText('Loading...');
+
+            expect(spinner).toBeInTheDocument();
+
+
+        });
+
+        it('hide spinner after api call successfully', async () => {
+            const actions = {
+                postLogIn: jest.fn().mockResolvedValueOnce({})
+            };
+
+            const { queryByText } = setUpForSubmit({ actions });
+            fireEvent.click(button);
+
+            await waitForDomChange();
+
+            const spinner = queryByText('Loading...');
+
+            expect(spinner).not.toBeInTheDocument();
+        });
+
+        it('hide spinner after api call with an error', async () => {
+            const actions = {
+                postLogIn: jest.fn().mockImplementation(() => {
+                    return new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                            reject({
+                                response: { data: {} }
+                            });
+                        }, 300);
+                    });
+                })
+            };
+
+            const { queryByText } = setUpForSubmit({ actions });
+            fireEvent.click(button);
+
+            await waitForDomChange();
+
+            const spinner = queryByText('Loading...');
+
+            expect(spinner).not.toBeInTheDocument();
+        });
+
+        it('redirects to home page after successfull login', async () => {
+            const actions = {
+                postLogIn: jest.fn().mockResolvedValue({})
+            };
+            const history = {
+                push: jest.fn()
+            };
+
+            setUpForSubmit({ actions, history });
+            fireEvent.click(button);
+
+            await waitForDomChange();
+            expect(history.push).toHaveBeenCalledWith('/');
+        });
     });
 
-    it('does not allow to the user to click login button when there is an ongoing api call', () => {
-        const actions = {
-            postLogin: jest.fn().mockResolvedValueOnce({})
-        };
-        setUpForSubmit({ actions });
 
-        fireEvent.click(button);
-        fireEvent.click(button);
-
-        expect(actions.postLogin).toHaveBeenCalledTimes(1);
-
-
-    });
-
-    it('has spinner to the user to click login button when there is an ongoing api call', () => {
-        const actions = {
-            postLogin: jest.fn().mockResolvedValueOnce({})
-        };
-        const { queryByText } = setUpForSubmit({ actions });
-
-        fireEvent.click(button);
-        const spinner = queryByText('Loading...');
-
-        expect(spinner).toBeInTheDocument();
-
-
-    });
-
-    it('hide spinner after api call successfully', async () => {
-        const actions = {
-            postLogin: jest.fn().mockResolvedValueOnce({})
-        };
-
-        const { queryByText } = setUpForSubmit({ actions });
-        fireEvent.click(button);
-
-        await waitForDomChange();
-
-        const spinner = queryByText('Loading...');
-
-        expect(spinner).not.toBeInTheDocument();
-    });
-
-    it('hide spinner after api call with an error', async () => {
-        const actions = {
-            postLogin: jest.fn().mockImplementation(() => {
-                return new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        reject({
-                            response: { data: {} }
-                        });
-                    }, 300);
-                });
-            })
-        };
-
-        const { queryByText } = setUpForSubmit({ actions });
-        fireEvent.click(button);
-
-        await waitForDomChange();
-
-        const spinner = queryByText('Loading...');
-
-        expect(spinner).not.toBeInTheDocument();
-    });
 
 });

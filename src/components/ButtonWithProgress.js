@@ -5,9 +5,9 @@ const ButtonWithProgress = (props) => {
         <button className="btn btn-primary"
             onClick={props.onClick}
             disabled={props.disabled}>
-            {props.pending && (
+            {props.pendingApiCall && (
                 <div className="spinner-border">
-                    <span className="sr-only">{props.progressText}</span>
+                    <span className="sr-only">Loading...</span>
                 </div>
             )}
             {props.text}
