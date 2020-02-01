@@ -31,20 +31,18 @@ export class LoginPage extends React.Component {
 
         this.setState({ pendingApiCall: true });
 
-        if (this.props.actions) {
-            this.props.actions.postLogIn(user)
-            
+        this.props.actions.postLogIn(user)
             .then(response => {
-                this.setState({ pendingApiCall: false });
-            })
-            .catch(error => {
+                this.setState({ pendingApiCall: false }, () => {
+                    this.props.history.push('/');
+                })
+
+            }).catch(error => {
                 if (error.response) {
                     this.setState({ apiError: error.response.data.message })
                 }
                 this.setState({ pendingApiCall: false });
             });
-        }
-
     }
 
     render() {
@@ -58,7 +56,7 @@ export class LoginPage extends React.Component {
 
         return (
             <div className="container">
-                <h1 className="text-center"> Log In</h1>
+                <h1 className="text-center">Log In</h1>
 
                 <div className="col-12 mb-3">
                     <Input label="User Name"
@@ -85,14 +83,11 @@ export class LoginPage extends React.Component {
                     </div>
                 }
 
-
-
-
                 <div className="text-center">
-                    <ButtonWithProgress onClick={this.onClickLogIn} 
+                    <ButtonWithProgress onClick={this.onClickLogIn}
                         disabled={this.state.pendingApiCall || buttonDisabled}
-                
-                        text="Log In" progressText="Loading...">
+                        pendingApiCall={this.state.pendingApiCall}
+                        text="Log In">
                     </ButtonWithProgress>
                 </div>
             </div>

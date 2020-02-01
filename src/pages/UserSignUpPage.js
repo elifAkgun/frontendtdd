@@ -58,7 +58,9 @@ export class UserSignUpPage extends React.Component {
         if (this.props.actions) {
             this.props.actions.postSignup(user)
                 .then(response => {
-                    this.setState({ pendingApiCall: false });
+                    this.setState({ pendingApiCall: false }, () => {
+                        this.props.history.push('/');
+                    }    );
                 })
                 .catch((apiError) => {
                     let errors = { ...this.state.errors }
@@ -75,7 +77,7 @@ export class UserSignUpPage extends React.Component {
     render() {
         return (
             <div className="container">
-                <h1 className="text-center"> Sign Up</h1>
+                <h1 className="text-center">Sign Up</h1>
                 <div className="col-12 mb-3">
                     <Input label="Display Name"
                         hasError={this.state.errors.displayName && true}
@@ -129,5 +131,18 @@ export class UserSignUpPage extends React.Component {
         );
     }
 }
+
+
+UserSignUpPage.defaultProps = {
+    actions: {
+        postSignup: () =>
+            new Promise((resolve, reject) =>
+                resolve({}))
+    }, 
+    history : {
+        push: ()=>{}
+    }
+
+};
 
 export default UserSignUpPage;
