@@ -6,15 +6,31 @@ import { HashRouter } from 'react-router-dom'
 import  App  from './container/App'
 import { LoginPage } from './pages/LoginPage'
 import * as apiCalls from './api/apiCalls';
+import {Provider} from 'react-redux';
+import {createStore} from 'redux';
+import authReducer from './redux/authReducer'
+
+const loggedInState = {
+    id: 1,
+    username: 'user1',
+    displayname: 'dis1',
+    image: 'img1.jpg',
+    password: '12345 ',
+    isLoggedIn: true
+}
+
+const store =createStore(authReducer,loggedInState);
 
 const actions = {
     postLogIn: apiCalls.login
 }
 
 ReactDOM.render(
+    <Provider store={store}>
     <HashRouter>
         <App></App>
-    </HashRouter>,
+    </HashRouter>
+    </Provider>,
     document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
