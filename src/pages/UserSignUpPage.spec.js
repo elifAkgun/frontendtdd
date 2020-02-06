@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, fireEvent, waitForDomChange, waitForElement, queryByText } from '@testing-library/react';
 import { UserSignUpPage } from './UserSignUpPage';
+import { MemoryRouter } from 'react-router-dom';
 
 describe('UserSignUpPage', () => {
 

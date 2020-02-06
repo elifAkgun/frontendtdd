@@ -1,5 +1,7 @@
 import React from 'react';
 import Input from '../components/Input'
+import { connect } from 'react-redux';
+import * as authActions from '../redux/authActions'
 
 export class UserSignUpPage extends React.Component {
 
@@ -15,22 +17,22 @@ export class UserSignUpPage extends React.Component {
 
     onChangeDisplayName = (event) => {
         const value = event.target.value;
-        const errors = {...this.state.errors};
+        const errors = { ...this.state.errors };
         delete errors.displayName;
         this.setState({ displayName: value, errors })
     }
 
     onChangeUserName = (event) => {
         const value = event.target.value;
-        const errors = {...this.state.errors};
+        const errors = { ...this.state.errors };
         delete errors.username;
-        this.setState({ username: value ,errors})
+        this.setState({ username: value, errors })
     }
 
     onChangePassword = (event) => {
         const value = event.target.value;
         const passwordRepeatConfirmed = this.state.repeatPassword === value;
-        const errors = {...this.state.errors};
+        const errors = { ...this.state.errors };
         delete errors.password;
         errors.repeatPassword = passwordRepeatConfirmed ? '' : 'Does not match to password';
         this.setState({ password: value, passwordRepeatConfirmed, errors })
@@ -39,10 +41,10 @@ export class UserSignUpPage extends React.Component {
     onChangeRepeatPassword = (event) => {
         const value = event.target.value;
         const passwordRepeatConfirmed = this.state.password === value;
-        const errors = {...this.state.errors};
+        const errors = { ...this.state.errors };
         delete errors.repeatPassword;
         errors.repeatPassword = passwordRepeatConfirmed ? '' : 'Does not match to password';
-        this.setState({ repeatPassword: value , passwordRepeatConfirmed, errors});
+        this.setState({ repeatPassword: value, passwordRepeatConfirmed, errors });
     }
 
     onClickSignUp = () => {
@@ -60,11 +62,11 @@ export class UserSignUpPage extends React.Component {
                 .then(response => {
                     this.setState({ pendingApiCall: false }, () => {
                         this.props.history.push('/');
-                    }    );
+                    });
                 })
                 .catch((apiError) => {
                     let errors = { ...this.state.errors }
-                    if (apiError.response.data && apiError.response.data.validationErrors) {
+                    if (apiError.response && apiError.response.data && apiError.response.data.validationErrors) {
                         errors = { ...apiError.response.data.validationErrors }
                     }
                     this.setState({ pendingApiCall: false, errors });
@@ -116,9 +118,9 @@ export class UserSignUpPage extends React.Component {
                     </Input>
                 </div>
                 <div className="text-center">
-                    <button className="btn btn-primary" 
-                    onClick={this.onClickSignUp} 
-                    disabled={this.state.pendingApiCall || !this.state.passwordRepeatConfirmed}>
+                    <button className="btn btn-primary"
+                        onClick={this.onClickSignUp}
+                        disabled={this.state.pendingApiCall || !this.state.passwordRepeatConfirmed}>
                         {this.state.pendingApiCall && (
                             <div className="spinner-border">
                                 <span className="sr-only">Loading...</span>
@@ -138,11 +140,19 @@ UserSignUpPage.defaultProps = {
         postSignup: () =>
             new Promise((resolve, reject) =>
                 resolve({}))
-    }, 
-    history : {
-        push: ()=>{}
+    },
+    history: {
+        push: () => { }
     }
 
 };
 
-export default UserSignUpPage;
+const mapDispatchToProps = (dispatch) => {
+    return {
+        actions: {
+            postSignup: (user) => dispatch(authActions.signUpHandler(user))
+        }
+    }
+}
+
+export default connect(null, mapDispatchToProps)(UserSignUpPage); 

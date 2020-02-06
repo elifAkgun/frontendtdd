@@ -55,8 +55,8 @@ describe('Top Bar', () => {
          });
          it('has link to login', () => {
             const {queryByText} =  setup();
-            const signup = queryByText('Log In');
-            expect(signup).toBeInTheDocument();
+            const logout = queryByText('Log In');
+            expect(logout).toBeInTheDocument();
          });
 
          it('display topbar when url is / ', () => {
@@ -96,5 +96,19 @@ describe('Top Bar', () => {
          }); 
        
 
+    })
+
+    describe('Interactions', ()=>{
+        it('displays the login and signup when user clicks logout',()=> {
+            const {queryByText} =  setup(loggedInState);
+            const logoutLink = queryByText('Logout')
+            fireEvent.click(logoutLink);
+            const login = queryByText('Log In');
+            expect(login).toBeInTheDocument();
+
+            const signup = queryByText('Sign Up');
+            expect(signup).toBeInTheDocument();
+        })
+    
     })
 })
