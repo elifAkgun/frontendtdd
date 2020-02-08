@@ -1,49 +1,49 @@
 import React from 'react';
 import { render, fireEvent, waitForDomChange, waitForElement, queryByText } from '@testing-library/react';
-import { UserSignUpPage } from './UserSignUpPage';
+import { UserSignupPage } from './UserSignupPage';
 import { MemoryRouter } from 'react-router-dom';
 
-describe('UserSignUpPage', () => {
+describe('UserSignupPage', () => {
 
     describe('Layout', () => { 
         it('has header of Sign Up', () => {
-            const { container } = render(<UserSignUpPage />);
+            const { container } = render(<UserSignupPage />);
             const header = container.querySelector('h1');
             expect(header).toHaveTextContent('Sign Up');
         });
 
         it('has input for display name', () => {
-            const { queryByPlaceholderText } = render(<UserSignUpPage />);
+            const { queryByPlaceholderText } = render(<UserSignupPage />);
             const displayNameInput = queryByPlaceholderText('Your Display Name');
             expect(displayNameInput).toBeInTheDocument();
         });
 
         it('has input for user name', () => {
-            const { queryByPlaceholderText } = render(<UserSignUpPage />);
+            const { queryByPlaceholderText } = render(<UserSignupPage />);
             const userNameInput = queryByPlaceholderText('Your User Name');
             expect(userNameInput).toBeInTheDocument();
         });
 
         it('has input for password', () => {
-            const { queryByPlaceholderText } = render(<UserSignUpPage />);
+            const { queryByPlaceholderText } = render(<UserSignupPage />);
             const passwordInput = queryByPlaceholderText('Your Password');
             expect(passwordInput).toBeInTheDocument();
         });
 
         it('has password type for password input', () => {
-            const { queryByPlaceholderText } = render(<UserSignUpPage />);
+            const { queryByPlaceholderText } = render(<UserSignupPage />);
             const passwordInput = queryByPlaceholderText('Your Password');
             expect(passwordInput.type).toBe("password");
         });
 
         it('has input for password repeat', () => {
-            const { queryByPlaceholderText } = render(<UserSignUpPage />);
+            const { queryByPlaceholderText } = render(<UserSignupPage />);
             const passwordRepeatInput = queryByPlaceholderText('Your Repeat Password');
             expect(passwordRepeatInput).toBeInTheDocument();
         });
 
         it('has submit button', () => {
-            const { container } = render(<UserSignUpPage />);
+            const { container } = render(<UserSignupPage />);
             const button = container.querySelector('button');
             expect(button).toBeInTheDocument();
         });
@@ -64,7 +64,7 @@ describe('UserSignUpPage', () => {
 
         const setUpForSubmit = (props) => {
             const rendered = render(
-                <UserSignUpPage {...props} />
+                <UserSignupPage {...props} />
             );
 
             const { container, queryByPlaceholderText } = rendered;
@@ -83,7 +83,7 @@ describe('UserSignUpPage', () => {
         };
 
         it('sets the display name value into state', () => {
-            const { queryByPlaceholderText } = render(<UserSignUpPage />);
+            const { queryByPlaceholderText } = render(<UserSignupPage />);
             const displayNameInput = queryByPlaceholderText('Your Display Name');
 
 
@@ -92,7 +92,7 @@ describe('UserSignUpPage', () => {
         });
 
         it('sets the user name value into state', () => {
-            const { queryByPlaceholderText } = render(<UserSignUpPage />);
+            const { queryByPlaceholderText } = render(<UserSignupPage />);
             const userNameInput = queryByPlaceholderText('Your User Name');
 
             fireEvent.change(userNameInput, changeEvent('my-user-name'));
@@ -100,7 +100,7 @@ describe('UserSignUpPage', () => {
         });
 
         it('sets the password value into state', () => {
-            const { queryByPlaceholderText } = render(<UserSignUpPage />);
+            const { queryByPlaceholderText } = render(<UserSignupPage />);
             const passwordInput = queryByPlaceholderText('Your Password');
 
             fireEvent.change(passwordInput, changeEvent('my-passwoP3rd'));
@@ -108,7 +108,7 @@ describe('UserSignUpPage', () => {
         });
 
         it('sets the repeat password value into state', () => {
-            const { queryByPlaceholderText } = render(<UserSignUpPage />);
+            const { queryByPlaceholderText } = render(<UserSignupPage />);
             const repeatPasswordInput = queryByPlaceholderText('Your Repeat Password');
 
             fireEvent.change(repeatPasswordInput, changeEvent('my-passwoP3rd'));
@@ -117,12 +117,12 @@ describe('UserSignUpPage', () => {
 
         it('calls post signup when the fields are valid and the actions are provided in props ', () => {
             const actions = {
-                postSignup: jest.fn().mockResolvedValueOnce({})
+                postsignup: jest.fn().mockResolvedValueOnce({})
             };
 
             setUpForSubmit({ actions });
             fireEvent.click(button);
-            expect(actions.postSignup).toHaveBeenCalledTimes(1);
+            expect(actions.postsignup).toHaveBeenCalledTimes(1);
         });
 
         it('it does not throw any exception when the button click with empty form', () => {
@@ -133,7 +133,7 @@ describe('UserSignUpPage', () => {
 
         it('calls post signup when the fields are valid and the actions are provided in props ', () => {
             const actions = {
-                postSignup: jest.fn().mockResolvedValueOnce({})
+                postsignup: jest.fn().mockResolvedValueOnce({})
             };
 
             setUpForSubmit({ actions });
@@ -145,26 +145,26 @@ describe('UserSignUpPage', () => {
                 displayName: 'my-display-name'
             };
 
-            expect(actions.postSignup).toHaveBeenCalledWith(expectedUser);
+            expect(actions.postsignup).toHaveBeenCalledWith(expectedUser);
         });
 
         it('does not allow to the user to click sign up button when there is an ongoing api call', () => {
             const actions = {
-                postSignup: jest.fn().mockResolvedValueOnce({})
+                postsignup: jest.fn().mockResolvedValueOnce({})
             };
             setUpForSubmit({ actions });
 
             fireEvent.click(button);
             fireEvent.click(button);
 
-            expect(actions.postSignup).toHaveBeenCalledTimes(1);
+            expect(actions.postsignup).toHaveBeenCalledTimes(1);
 
 
         });
 
         it('has spinner to the user to click sign up button when there is an ongoing api call', () => {
             const actions = {
-                postSignup: jest.fn().mockResolvedValueOnce({})
+                postsignup: jest.fn().mockResolvedValueOnce({})
             };
             const { queryByText } = setUpForSubmit({ actions });
 
@@ -178,7 +178,7 @@ describe('UserSignUpPage', () => {
 
         it('hide spinner after api call successfully', async () => {
             const actions = {
-                postSignup: jest.fn().mockResolvedValueOnce({})
+                postsignup: jest.fn().mockResolvedValueOnce({})
             };
 
             const { queryByText } = setUpForSubmit({ actions });
@@ -193,7 +193,7 @@ describe('UserSignUpPage', () => {
 
         it('hide spinner after api call with an error', async () => {
             const actions = {
-                postSignup: jest.fn().mockImplementation(() => {
+                postsignup: jest.fn().mockImplementation(() => {
                     return new Promise((resolve, reject) => {
                         setTimeout(() => {
                             reject({
@@ -216,7 +216,7 @@ describe('UserSignUpPage', () => {
 
         it('displays validation error for display name when error is recieved for the field', async () => {
             const actions = {
-                postSignup: jest.fn().mockRejectedValue({
+                postsignup: jest.fn().mockRejectedValue({
                     response: {
                         data: {
                             validationErrors: {
@@ -265,7 +265,7 @@ describe('UserSignUpPage', () => {
 
         it('hides the validation error when user changes the content of display name', async () => {
             const actions = {
-                postSignup: jest.fn().mockRejectedValue({
+                postsignup: jest.fn().mockRejectedValue({
                     response: {
                         data: {
                             validationErrors: {
@@ -286,7 +286,7 @@ describe('UserSignUpPage', () => {
 
         it('redirects to home page after successfull signup', async () => {
             const actions = {
-                postSignup: jest.fn().mockResolvedValue({})
+                postsignup: jest.fn().mockResolvedValue({})
             };
             const history = {
                 push: jest.fn()

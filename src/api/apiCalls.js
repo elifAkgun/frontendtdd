@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const signUp = (user) => { 
+export const signup = (user) => { 
     return axios.post('/v1/api/users', user);
 }; 
 

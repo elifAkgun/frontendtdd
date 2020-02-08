@@ -4,7 +4,7 @@ import ButtonWithProgress from '../components/ButtonWithProgress'
 import { connect } from 'react-redux';
 import * as authActions from '../redux/authActions'
 
-export class UserSignUpPage extends React.Component {
+export class UserSignupPage extends React.Component {
 
     state = {
         displayName: '',
@@ -48,7 +48,7 @@ export class UserSignUpPage extends React.Component {
         this.setState({ repeatPassword: value, passwordRepeatConfirmed, errors });
     }
 
-    onClickSignUp = () => {
+    onClicksignup = () => {
 
         const user = {
             username: this.state.username,
@@ -57,24 +57,22 @@ export class UserSignUpPage extends React.Component {
         };
 
         this.setState({ pendingApiCall: true });
+        this.props.actions.postsignup(user)
+            .then((response) => {
+                this.setState({ pendingApiCall: false }, () => 
+                    this.props.history.push('/')
+                );
+            })
+            .catch((apiError) => {
+                let errors = { ...this.state.errors }
+                if (apiError.response && apiError.response.data && apiError.response.data.validationErrors) {
+                    errors = { ...apiError.response.data.validationErrors }
+                }
+                this.setState({ pendingApiCall: false, errors });
+            })
+            ;
 
-        if (this.props.actions) {
-            this.props.actions.postSignup(user)
-                .then(response => {
-                    this.setState({ pendingApiCall: false }, () => {
-                        this.props.history.push('/');
-                    });
-                })
-                .catch((apiError) => {
-                    let errors = { ...this.state.errors }
-                    if (apiError.response && apiError.response.data && apiError.response.data.validationErrors) {
-                        errors = { ...apiError.response.data.validationErrors }
-                    }
-                    this.setState({ pendingApiCall: false, errors });
-                })
-                ;
-
-        }
+        
     }
 
     render() {
@@ -120,13 +118,13 @@ export class UserSignUpPage extends React.Component {
                 </div>
                 <div className="text-center">
 
-                <ButtonWithProgress onClick={this.onClickSignUp}
+                    <ButtonWithProgress onClick={this.onClicksignup}
                         disabled={this.state.pendingApiCall || !this.state.passwordRepeatConfirmed}
                         pendingApiCall={this.state.pendingApiCall}
                         text="Sign Up">
                     </ButtonWithProgress>
 
-                   
+
                 </div>
             </div>
         );
@@ -134,24 +132,23 @@ export class UserSignUpPage extends React.Component {
 }
 
 
-UserSignUpPage.defaultProps = {
+UserSignupPage.defaultProps = {
     actions: {
-        postSignup: () =>
+        postsignup: () =>
             new Promise((resolve, reject) =>
                 resolve({}))
     },
     history: {
         push: () => { }
     }
-
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         actions: {
-            postSignup: (user) => dispatch(authActions.signUpHandler(user))
+            postsignup: (user) => dispatch(authActions.signupHandler(user))
         }
     }
 }
 
-export default connect(null, mapDispatchToProps)(UserSignUpPage); 
+export default connect(null, mapDispatchToProps)(UserSignupPage); 

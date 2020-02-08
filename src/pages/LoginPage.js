@@ -34,10 +34,6 @@ export class LoginPage extends React.Component {
 
         this.props.actions.postLogIn(user)
             .then(response => {
-                this.props.dispatch(authActions.loginHandler({
-                    ...response.data,
-                    password: this.state.password
-                }));
                 this.setState({ pendingApiCall: false }, () => {
                     this.props.history.push('/');
                 })

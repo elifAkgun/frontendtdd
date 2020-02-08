@@ -22,13 +22,12 @@ export const loginHandler = (credentials) => {
     }
 };
 
-export const signUpHandler = (user) => {
+export const signupHandler = (user) => {
     return function (dispatch) {
-        return apiCalls.signUp(user).then((response) => {
-            dispatch(
+        return apiCalls.signup(user).then((response) => {
+            return  dispatch(
                 loginHandler(user)
             );
-            return response;
         });
     };
 };
