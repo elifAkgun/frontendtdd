@@ -34,7 +34,7 @@ export class LoginPage extends React.Component {
 
         this.props.actions.postLogIn(user)
             .then(response => {
-                this.props.dispatch(authActions.loginSuccess({
+                this.props.dispatch(authActions.loginHandler({
                     ...response.data,
                     password: this.state.password
                 }));
@@ -103,7 +103,8 @@ export class LoginPage extends React.Component {
 
 LoginPage.defaultProps = {
     actions: {
-        postLogIn: () => new Promise((resolve, reject) => resolve({}))
+        postLogIn: () => new Promise((resolve, reject) =>
+            resolve({}))
     },
     dispatch: () => { }
 };

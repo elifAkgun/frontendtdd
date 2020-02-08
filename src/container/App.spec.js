@@ -5,14 +5,10 @@ import App from './App';
 import { Provider } from 'react-redux';
 import axios from 'axios';
 import configureStore from '../redux/configureStore'
-import {createStore} from 'redux';
-
-
-const store = configureStore();
 
 
 const setup = (path) => {
-    const store = createStore(false);
+    const store = configureStore(false);
     return render(
         <Provider store={store}>
             <MemoryRouter initialEntries={[path]}>
@@ -97,13 +93,14 @@ describe('App Page', () => {
         fireEvent.change(userNameInput, changeEvent('user1'));
         fireEvent.change(passwordInput, changeEvent('my-passwoP3rd'));
         fireEvent.change(repeatPasswordInput, changeEvent('my-passwoP3rd'));
+ 
         const button = container.querySelector('button');
-
-        axios.post = jest.fn().mockResolvedValue({
+        
+        axios.post = jest.fn().mockResolvedValueOnce({
             data: {
                 message :'User Saved'
             }
-        }).mockResolvedValue({
+        }).mockResolvedValueOnce({
             data: {
                 id: 1,
                 username : 'user1',

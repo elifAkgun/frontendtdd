@@ -1,5 +1,6 @@
 import React from 'react';
 import Input from '../components/Input'
+import ButtonWithProgress from '../components/ButtonWithProgress'
 import { connect } from 'react-redux';
 import * as authActions from '../redux/authActions'
 
@@ -118,16 +119,14 @@ export class UserSignUpPage extends React.Component {
                     </Input>
                 </div>
                 <div className="text-center">
-                    <button className="btn btn-primary"
-                        onClick={this.onClickSignUp}
-                        disabled={this.state.pendingApiCall || !this.state.passwordRepeatConfirmed}>
-                        {this.state.pendingApiCall && (
-                            <div className="spinner-border">
-                                <span className="sr-only">Loading...</span>
-                            </div>
-                        )}
-                        Sign Up
-                        </button>
+
+                <ButtonWithProgress onClick={this.onClickSignUp}
+                        disabled={this.state.pendingApiCall || !this.state.passwordRepeatConfirmed}
+                        pendingApiCall={this.state.pendingApiCall}
+                        text="Sign Up">
+                    </ButtonWithProgress>
+
+                   
                 </div>
             </div>
         );

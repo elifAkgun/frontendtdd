@@ -6,7 +6,7 @@ import thunk from 'redux-thunk';
 const configureStore = (addLogger = true) => {
     const middleware = addLogger
         ? applyMiddleware(thunk, logger)
-        : applyMiddleware(logger)
+        : applyMiddleware(thunk)
     return createStore(authReducer, middleware);
 }
 

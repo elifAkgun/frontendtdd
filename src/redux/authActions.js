@@ -25,10 +25,10 @@ export const loginHandler = (credentials) => {
 export const signUpHandler = (user) => {
     return function (dispatch) {
         return apiCalls.signUp(user).then((response) => {
-            dispatch(loginHandler(user));
-            return response
-        }
-
-        )
-    }
-}
+            dispatch(
+                loginHandler(user)
+            );
+            return response;
+        });
+    };
+};
