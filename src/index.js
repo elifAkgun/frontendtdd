@@ -3,18 +3,18 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
 import { HashRouter } from 'react-router-dom'
-import  App  from './container/App'
-import { LoginPage } from './pages/LoginPage'
-import * as apiCalls from './api/apiCalls';
-
-const actions = {
-    postLogIn: apiCalls.login
-}
+import App from './container/App'
+import { Provider } from 'react-redux';
+import configureStore from './redux/configureStore'
+ 
+const store = configureStore();
 
 ReactDOM.render(
-    <HashRouter>
-        <App></App>
-    </HashRouter>,
+    <Provider store={store}>
+        <HashRouter>
+            <App></App>
+        </HashRouter>
+    </Provider>,
     document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
